@@ -1,22 +1,22 @@
-import { Schema, model, connect } from 'mongoose';
+export type IFullName = {
+  firstName: string;
+  lastName: string;
+};
 
-interface IUser {
+export type IAddress = {
+  street: string;
+  city: string;
+  country: string;
+};
+
+export interface IUser {
   userId: number;
   username: string;
   password: string;
-  fullName: {
-    firstName: string;
-    lastName: string;
-  };
+  fullName: IFullName;
   age: number;
   email: string;
   isActive: boolean;
   hobbies: [string, string];
-  address: {
-    street: string;
-    city: string;
-    country: string;
-  };
+  address: IAddress;
 }
-
-export default IUser;
