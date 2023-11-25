@@ -38,8 +38,9 @@ const userSchema = new Schema<IUser>({
     type: addressSchema,
     required: [true, 'Address is required'],
   },
-  isDeleted: { type: Boolean, default: false },
+  // isDeleted: { type: Boolean, default: false },
 });
+
 
 // pre and post middleware
 userSchema.pre('save', async function (next) {
