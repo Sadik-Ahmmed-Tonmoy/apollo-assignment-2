@@ -2,27 +2,33 @@ import { Schema, model } from 'mongoose';
 import { IAddress, IFullName, IUser } from './user/user.interface';
 
 const fullNameSchema = new Schema<IFullName>({
-  firstName: { type: String, required: true },
-  lastName: { type: String },
+  firstName: { type: String, trim:true, required: [true, 'First name is required'] },
+  lastName: { type: String , trim:true, },
 });
 
 const addressSchema = new Schema<IAddress>({
-  street: { type: String, required: true },
-  city: { type: String, required: true },
-  country: { type: String, required: true },
+  street: { type: String, required: [true, 'Street is required'] },
+  city: { type: String, required: [true, 'City is required'] },
+  country: { type: String, required: [true, 'Country is required'] },
 });
 
 const userSchema = new Schema<IUser>({
-  userId: { type: Number },
-  username: { type: String, required: true },
-  password: { type: String, required: true },
-  fullName: fullNameSchema,
-  age: { type: Number, required: true },
-  email: { type: String, required: true },
-  isActive: { type: Boolean, required: true },
+  userId: { type: Number, required: [true, 'User ID is required'] },
+  username: { type: String, required: [true, 'Username is required'] },
+  password: { type: String, required: [true, 'Password is required'] },
+  fullName: {
+    type: fullNameSchema,
+    required: [true, 'Full name is required'],
+  },
+  age: { type: Number, required: [true, 'Age is required'] },
+  email: { type: String,trim:true,  required: [true, 'Email is required'] },
+  isActive: { type: Boolean, required: [true, 'isActive is required'] },
   hobbies: [String, String],
-  address: addressSchema,
+  address: {
+    type: addressSchema,
+    required: [true, 'Address is required'],
+  },
 });
 
-// 3. Create a Model.
+// Create a Model.
 export const User = model<IUser>('User', userSchema);
