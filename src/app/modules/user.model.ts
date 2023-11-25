@@ -19,7 +19,11 @@ const addressSchema = new Schema<IAddress>({
 });
 
 const userSchema = new Schema<IUser>({
-  userId: { type: Number, required: [true, 'User ID is required'] },
+  userId: {
+    type: Number,
+    unique: true,
+    required: [true, 'User ID is required'],
+  },
   username: { type: String, required: [true, 'Username is required'] },
   password: { type: String, required: [true, 'Password is required'] },
   fullName: {
@@ -34,8 +38,10 @@ const userSchema = new Schema<IUser>({
     type: addressSchema,
     required: [true, 'Address is required'],
   },
+  isDeleted: { type: Boolean, default: false },
 });
 
+// pre and post middleware
 userSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this;
@@ -47,6 +53,15 @@ userSchema.pre('save', async function (next) {
 });
 userSchema.post('save', async function (doc, next) {
   doc.password = '';
+  next();
+});
+
+userSchema.pre('find', function (next) {
+  this.find({isDeleted: {$ne: true}})
+  next();
+});
+userSchema.pre('findOne', function (next) {
+  this.find({isDeleted: {$ne: true}})
   next();
 });
 

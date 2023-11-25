@@ -47,6 +47,7 @@ const zodUserValidation = z.object({
   isActive: z.boolean(),
   hobbies: z.array(z.string()),
   address: addressSchema,
+  // isDeleted: z.boolean()
 });
 
 export default zodUserValidation;

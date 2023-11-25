@@ -19,4 +19,6 @@ export interface IUser {
   isActive: boolean;
   hobbies: string[];
   address: IAddress;
+  isDeleted: boolean,
+
 }

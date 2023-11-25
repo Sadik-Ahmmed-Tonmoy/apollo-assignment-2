@@ -24,10 +24,10 @@ const createUser = async (req: Request, res: Response) => {
       message: 'User created successfully!',
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'something went wrong',
+      message: err.message || 'something went wrong',
       error: err,
     });
   }
@@ -41,10 +41,10 @@ const getAllUsers = async (req: Request, res: Response) => {
       message: 'Users fetched successfully!',
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'something went wrong',
+      message: err.message || 'something went wrong',
       error: err,
     });
   }
@@ -58,10 +58,29 @@ const getSingleUser = async (req: Request, res: Response) => {
       message: 'User fetched successfully!',
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'something went wrong',
+      message: err.message || 'something went wrong',
+      error: err,
+    });
+  }
+};
+
+
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const id: number = parseInt(req.params.userId);
+    const result = await userServices.deleteUserFromDB(id);
+    res.status(200).json({
+      success: true,
+      message: 'User deleted successfully!',
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'something went wrong',
       error: err,
     });
   }
@@ -71,4 +90,5 @@ export const userController = {
   createUser,
   getAllUsers,
   getSingleUser,
+  deleteUser
 };
