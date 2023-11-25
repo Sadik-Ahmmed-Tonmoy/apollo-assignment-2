@@ -56,5 +56,4 @@ const userJoiSchema = Joi.object({
   }),
 });
 
-
 export default userJoiSchema;
