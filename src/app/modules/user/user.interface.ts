@@ -9,6 +9,10 @@ export type IAddress = {
   country: string;
 };
 
+export type IOrder= 
+  [string, number, number]
+;
+
 export interface IUser {
   userId: number;
   username: string;
@@ -19,6 +23,7 @@ export interface IUser {
   isActive: boolean;
   hobbies: string[];
   address: IAddress;
+  orders?: IOrder[];
   // isDeleted: boolean,
 
 }

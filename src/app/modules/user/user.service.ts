@@ -1,16 +1,39 @@
 import { User } from '../user.model';
-import { IUser } from './user.interface';
+import { IOrder, IUser } from './user.interface';
 
 const createUserIntoDb = async (user: IUser) => {
   const result = await User.create(user);
   return result;
 };
 const getAllUsersFromDB = async () => {
-  const result = await User.find();
+  const result = await User.find(
+    {},
+    {
+      userId:0,
+      _id: 0,
+      password: 0,
+      'fullName._id': 0,
+      'address._id': 0,
+      isActive:0,
+      hobbies:0,
+      orders: 0,
+      __v: 0,
+    },
+  );
   return result;
 };
 const getSingleUserFromDB = async (id: number) => {
-  const result = await User.findOne({ userId: id });
+  const result = await User.findOne(
+    { userId: id },
+    {
+      _id: 0,
+      password: 0,
+      'fullName._id': 0,
+      'address._id': 0,
+      orders: 0,
+      __v: 0,
+    },
+  );
   return result;
 };
 
@@ -32,11 +55,17 @@ const updateUser = async (
   const result = await User.findOneAndUpdate({ userId: id }, userData, {
     new: true,
     runValidators: true,
-  })
+  }).select({
+    _id: 0,
+    password: 0,
+    'fullName._id': 0,
+    'address._id': 0,
+    orders: 0,
+    __v: 0,
+  });;
 
-  return result
-}
-
+  return result;
+};
 
 // const deleteUserFromDB = async (id: number) => {
 //   const result = await User.updateOne({ userId: id }, {isDeleted: true });
@@ -44,9 +73,30 @@ const updateUser = async (
 // };
 
 const deleteUserFromDB = async (id: number) => {
-  const result = await User.deleteOne({ userId: id })
-  return result
-}
+  const result = await User.deleteOne({ userId: id });
+  return result;
+};
+
+const addOrderItemToDB = async (id: number, orderData: IOrder) => {
+  try {
+    const user = await User.findOne({ userId: id });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (!user.orders) {
+      user.orders = { orders: [] };
+    }
+
+    user.orders.push(orderData);
+
+    const result = await user.save();
+    return result;
+  } catch (error: any) {
+    throw new Error(error.message || 'Something went wrong');
+  }
+};
 
 export const userServices = {
   createUserIntoDb,
@@ -54,4 +104,5 @@ export const userServices = {
   getSingleUserFromDB,
   updateUser,
   deleteUserFromDB,
+  addOrderItemToDB,
 };

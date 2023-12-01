@@ -1,21 +1,42 @@
 import { Schema, model } from 'mongoose';
-import { IAddress, IFullName, IUser } from './user/user.interface';
+import { IAddress, IFullName, IOrder, IUser } from './user/user.interface';
 import bcrypt from 'bcrypt';
 import config from '../config';
 
-const fullNameSchema = new Schema<IFullName>({
-  firstName: {
-    type: String,
-    trim: true,
-    required: [true, 'First name is required'],
+const fullNameSchema = new Schema<IFullName>(
+  {
+    firstName: {
+      type: String,
+      trim: true,
+      required: [true, 'First name is required'],
+    },
+    lastName: { type: String, trim: true },
   },
-  lastName: { type: String, trim: true },
-});
+  { _id: false },
+);
 
-const addressSchema = new Schema<IAddress>({
-  street: { type: String, required: [true, 'Street is required'] },
-  city: { type: String, required: [true, 'City is required'] },
-  country: { type: String, required: [true, 'Country is required'] },
+const addressSchema = new Schema<IAddress>(
+  {
+    street: { type: String, required: [true, 'Street is required'] },
+    city: { type: String, required: [true, 'City is required'] },
+    country: { type: String, required: [true, 'Country is required'] },
+  },
+  { _id: false },
+);
+
+const OrderSchema = new Schema<IOrder>({
+  productName: {
+    type: String,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+  totalPrice: {
+    type: Number,
+    required: true,
+  },
 });
 
 const userSchema = new Schema<IUser>({
@@ -38,9 +59,11 @@ const userSchema = new Schema<IUser>({
     type: addressSchema,
     required: [true, 'Address is required'],
   },
+  orders: {
+    type: [OrderSchema],
+  },
   // isDeleted: { type: Boolean, default: false },
 });
-
 
 // pre and post middleware
 userSchema.pre('save', async function (next) {
@@ -57,14 +80,15 @@ userSchema.post('save', async function (doc, next) {
   next();
 });
 
-userSchema.pre('find', function (next) {
-  this.find({isDeleted: {$ne: true}})
-  next();
-});
-userSchema.pre('findOne', function (next) {
-  this.find({isDeleted: {$ne: true}})
-  next();
-});
+
+// userSchema.pre('find', function (next) {
+//   this.find({ isDeleted: { $ne: true } });
+//   next();
+// });
+// userSchema.pre('findOne', function (next) {
+//   this.find({ isDeleted: { $ne: true } });
+//   next();
+// });
 
 // Create a Model.
 export const User = model<IUser>('User', userSchema);

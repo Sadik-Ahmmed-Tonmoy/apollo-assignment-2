@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { userServices } from './user.service';
 import zodUserValidation from './userZodValidation';
+import { IOrder } from './user.interface';
 
 const createUser = async (req: Request, res: Response) => {
   try {
@@ -103,10 +104,39 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+const addOrderItemToUser = async (req: Request, res: Response) => {
+  try {
+    const orderData = req.body;
+    const id: number = parseInt(req.params.userId);
+    const result = await userServices.addOrderItemToDB(id, orderData);
+    
+    res.status(200).json({
+      status: 'success',
+      message: 'Order created successfully!',
+      data: result.orders,
+    });
+  } catch (error: any) {
+    if (error instanceof Error) {
+      res.status(404).json({
+        status: 'fail',
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        status: 'fail',
+        message: error.message || 'Something went wrong',
+      });
+    }
+  }
+};
+
+
+
+
 export const userController = {
   createUser,
   getAllUsers,
   getSingleUser,
   updateUser,
   deleteUser,
-};
+  addOrderItemToUser};
