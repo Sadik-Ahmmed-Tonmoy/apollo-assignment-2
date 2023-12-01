@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { User } from '../user.model';
 import { IOrder, IUser } from './user.interface';
 
@@ -88,26 +89,22 @@ const deleteUserFromDB = async (id: number) => {
   return result;
 };
 
-// const addOrderItemToDB = async (id: number, orderData: IOrder) => {
-//   try {
-//     const user = await User.findOne({ userId: id });
+const addOrderItemToDB = async (id: number, orderData: IOrder) => {
+  try {
+    const user = await User.findOne({ userId: id });
 
-//     if (!user) {
-//       throw new Error('User not found');
-//     }
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-//     if (!user.orders) {
-//       user.orders = { orders: [] };
-//     }
+    user.orders.push(orderData);
 
-//     user.orders.push(orderData);
-
-//     const result = await user.save();
-//     return result;
-//   } catch (error: any) {
-//     throw new Error(error.message || 'Something went wrong');
-//   }
-// };
+    const result = await user.save();
+    return result;
+  } catch (error: any) {
+    throw new Error(error.message || 'Something went wrong');
+  }
+};
 
 export const userServices = {
   createUserIntoDb,
@@ -115,5 +112,5 @@ export const userServices = {
   getSingleUserFromDB,
   updateUser,
   deleteUserFromDB,
-  // addOrderItemToDB,
+  addOrderItemToDB,
 };
