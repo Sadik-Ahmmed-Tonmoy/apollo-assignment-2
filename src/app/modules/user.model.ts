@@ -29,11 +29,11 @@ const OrderSchema = new Schema<IOrder>({
     type: String,
     required: true,
   },
-  quantity: {
+  price: {
     type: Number,
     required: true,
   },
-  totalPrice: {
+  quantity: {
     type: Number,
     required: true,
   },

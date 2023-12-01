@@ -9,9 +9,13 @@ export type IAddress = {
   country: string;
 };
 
-export type IOrder= 
-  [string, number, number]
-;
+export type IOrder= {
+  productName: string;
+  price: number;
+  quantity: number;
+}
+
+
 
 export interface IUser {
   userId: number;
@@ -23,7 +27,7 @@ export interface IUser {
   isActive: boolean;
   hobbies: string[];
   address: IAddress;
-  orders?: IOrder[];
+  orders?: [IOrder];
   // isDeleted: boolean,
 
 }

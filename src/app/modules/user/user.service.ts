@@ -3,19 +3,30 @@ import { IOrder, IUser } from './user.interface';
 
 const createUserIntoDb = async (user: IUser) => {
   const result = await User.create(user);
-  return result;
+  const userData = await User.findOne(
+    { userId: result.userId },
+    {
+      _id: 0,
+      password: 0,
+      'fullName._id': 0,
+      'address._id': 0,
+      orders: 0,
+      __v: 0,
+    },
+  );
+  return userData;
 };
 const getAllUsersFromDB = async () => {
   const result = await User.find(
     {},
     {
-      userId:0,
+      userId: 0,
       _id: 0,
       password: 0,
       'fullName._id': 0,
       'address._id': 0,
-      isActive:0,
-      hobbies:0,
+      isActive: 0,
+      hobbies: 0,
       orders: 0,
       __v: 0,
     },
@@ -62,7 +73,7 @@ const updateUser = async (
     'address._id': 0,
     orders: 0,
     __v: 0,
-  });;
+  });
 
   return result;
 };
@@ -77,26 +88,26 @@ const deleteUserFromDB = async (id: number) => {
   return result;
 };
 
-const addOrderItemToDB = async (id: number, orderData: IOrder) => {
-  try {
-    const user = await User.findOne({ userId: id });
+// const addOrderItemToDB = async (id: number, orderData: IOrder) => {
+//   try {
+//     const user = await User.findOne({ userId: id });
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+//     if (!user) {
+//       throw new Error('User not found');
+//     }
 
-    if (!user.orders) {
-      user.orders = { orders: [] };
-    }
+//     if (!user.orders) {
+//       user.orders = { orders: [] };
+//     }
 
-    user.orders.push(orderData);
+//     user.orders.push(orderData);
 
-    const result = await user.save();
-    return result;
-  } catch (error: any) {
-    throw new Error(error.message || 'Something went wrong');
-  }
-};
+//     const result = await user.save();
+//     return result;
+//   } catch (error: any) {
+//     throw new Error(error.message || 'Something went wrong');
+//   }
+// };
 
 export const userServices = {
   createUserIntoDb,
@@ -104,5 +115,5 @@ export const userServices = {
   getSingleUserFromDB,
   updateUser,
   deleteUserFromDB,
-  addOrderItemToDB,
+  // addOrderItemToDB,
 };
