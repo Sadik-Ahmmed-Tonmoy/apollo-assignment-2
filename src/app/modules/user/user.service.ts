@@ -117,6 +117,15 @@ const addOrderItemToDB = async (id: number, orderData: IOrder) => {
   }
 };
 
+const getOrdersSingleUserFromDB = async (id: number) => {
+  try {
+    const user = await User.findOne({ userId: id }, { orders: 1, _id: 0 });
+    return user;
+  } catch (error: any) {
+    throw new Error(error.message || 'Something went wrong');
+  }
+};
+
 export const userServices = {
   createUserIntoDb,
   getAllUsersFromDB,
@@ -124,4 +133,5 @@ export const userServices = {
   updateUser,
   deleteUserFromDB,
   addOrderItemToDB,
+  getOrdersSingleUserFromDB,
 };

@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { userServices } from './user.service';
 import zodUserValidation from './userZodValidation';
 
-const createUser = async (req: Request, res: Response,next: NextFunction) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.body;
     // const {error, value} = userJoiSchema.validate(user);
@@ -42,7 +42,11 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 };
-const getSingleUser = async (req: Request, res: Response, next: NextFunction) => {
+const getSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const id: number = parseInt(req.params.userId);
     const result = await userServices.getSingleUserFromDB(id);
@@ -85,29 +89,38 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const addOrderItemToUser = async (req: Request, res: Response) => {
+const addOrderItemToUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const orderData = req.body;
     const id: number = parseInt(req.params.userId);
-    const result = await userServices.addOrderItemToDB(id, orderData);
+    await userServices.addOrderItemToDB(id, orderData);
 
     res.status(200).json({
       status: 'success',
       message: 'Order created successfully!',
-      data: result.orders,
+      data: null,
     });
   } catch (error: any) {
-    if (error instanceof Error) {
-      res.status(404).json({
-        status: 'fail',
-        message: error.message,
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: error.message || 'Something went wrong',
-      });
-    }
+    next(error);
+  }
+};
+
+const getOrdersOfSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id: number = parseInt(req.params.userId);
+    const result = await userServices.getOrdersSingleUserFromDB(id);
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Order created successfully!',
+      data: result,
+    });
+  } catch (error: any) {
+    next(error);
   }
 };
 
@@ -118,4 +131,5 @@ export const userController = {
   updateUser,
   deleteUser,
   addOrderItemToUser,
+  getOrdersOfSingleUser
 };
