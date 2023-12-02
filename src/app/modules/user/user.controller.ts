@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { userServices } from './user.service';
 import zodUserValidation from './userZodValidation';
-import { IOrder } from './user.interface';
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response,next: NextFunction) => {
   try {
     const user = req.body;
     // const {error, value} = userJoiSchema.validate(user);
@@ -27,15 +26,11 @@ const createUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'something went wrong',
-      error: err,
-    });
+    next(err);
   }
 };
 
-const getAllUsers = async (req: Request, res: Response) => {
+const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await userServices.getAllUsersFromDB();
     res.status(200).json({
@@ -44,14 +39,10 @@ const getAllUsers = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'something went wrong',
-      error: err,
-    });
+    next(err);
   }
 };
-const getSingleUser = async (req: Request, res: Response) => {
+const getSingleUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id: number = parseInt(req.params.userId);
     const result = await userServices.getSingleUserFromDB(id);
@@ -61,15 +52,11 @@ const getSingleUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'something went wrong',
-      error: err,
-    });
+    next(err);
   }
 };
 
-const updateUser = async (req: Request, res: Response) => {
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userData = req.body;
     const id: number = parseInt(req.params.userId);
@@ -79,15 +66,12 @@ const updateUser = async (req: Request, res: Response) => {
       message: 'User updated successfully!',
       data: result,
     });
-  } catch (error: any) {
-    res.status(500).json({
-      status: 'fail',
-      message: error.message || 'Something went wrong',
-    });
+  } catch (err: any) {
+    next(err);
   }
 };
 
-const deleteUser = async (req: Request, res: Response) => {
+const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id: number = parseInt(req.params.userId);
     const result = await userServices.deleteUserFromDB(id);
@@ -97,11 +81,7 @@ const deleteUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'something went wrong',
-      error: err,
-    });
+    next(err);
   }
 };
 

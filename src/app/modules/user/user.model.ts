@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
-import { IAddress, IFullName, IOrder, IUser } from './user/user.interface';
+import { IAddress, IFullName, IOrder, IUser } from './user.interface';
 import bcrypt from 'bcrypt';
-import config from '../config';
+import config from '../../config';
 
 const fullNameSchema = new Schema<IFullName>(
   {
@@ -24,20 +24,23 @@ const addressSchema = new Schema<IAddress>(
   { _id: false },
 );
 
-const OrderSchema = new Schema<IOrder>({
-  productName: {
-    type: String,
-    required: true,
+const OrderSchema = new Schema<IOrder>(
+  {
+    productName: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
   },
-  price: {
-    type: Number,
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    required: true,
-  },
-}, {_id: false});
+  { _id: false },
+);
 
 const userSchema = new Schema<IUser>({
   userId: {
@@ -79,7 +82,6 @@ userSchema.post('save', async function (doc, next) {
   doc.password = '';
   next();
 });
-
 
 // userSchema.pre('find', function (next) {
 //   this.find({ isDeleted: { $ne: true } });

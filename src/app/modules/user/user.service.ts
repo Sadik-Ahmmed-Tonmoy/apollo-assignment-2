@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { User } from '../user.model';
+import { User } from './user.model';
 import { IOrder, IUser } from './user.interface';
 
 const createUserIntoDb = async (user: IUser) => {
@@ -97,10 +97,21 @@ const addOrderItemToDB = async (id: number, orderData: IOrder) => {
       throw new Error('User not found');
     }
 
-    user.orders.push(orderData);
+    const newOrder = {
+      productName: orderData.productName,
+      price: orderData.price,
+      quantity: orderData.quantity,
+    };
 
-    const result = await user.save();
-    return result;
+    if (!user.orders) {
+      user.orders = [newOrder];
+    } else {
+      user.orders.push(newOrder);
+    }
+
+    const updatedUser = await user.save();
+
+    return updatedUser;
   } catch (error: any) {
     throw new Error(error.message || 'Something went wrong');
   }
