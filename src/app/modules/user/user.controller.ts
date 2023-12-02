@@ -116,7 +116,7 @@ const getOrdersOfSingleUser = async (
 
     res.status(200).json({
       status: 'success',
-      message: 'Order created successfully!',
+      message: 'Order fetched successfully!',
       data: result,
     });
   } catch (error: any) {
